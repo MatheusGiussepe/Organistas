@@ -1,20 +1,20 @@
 /* ============================================================
-   Lista de Organistas - tema musical, simples e suave.
-   Paleta inspirada em partituras: marfim, dourado e azul-noite.
+   Lista de Organistas - tema musical, feminino e suave.
+   Paleta: rosa-blush, rosé e bordô-aubergine.
    ============================================================ */
 
 :root {
-  --bg:        #f7f3ea;          /* marfim - como papel de partitura */
-  --bg-soft:   #efe8d6;
-  --ink:       #1f2742;          /* azul-noite */
-  --ink-soft:  #4a5273;
-  --muted:     #8a8da3;
-  --gold:      #b88c3f;
-  --gold-soft: #e6c878;
-  --line:      #d8cfb8;
+  --bg:        #fdf6f4;          /* blush bem clarinho, quase creme */
+  --bg-soft:   #f9e6ec;          /* rosa pálido */
+  --ink:       #5a2042;          /* bordô-aubergine - elegante e feminino */
+  --ink-soft:  #864868;
+  --muted:     #b896a5;
+  --gold:      #d05a86;          /* rosa-pink principal (acento) */
+  --gold-soft: #f4b8cc;          /* rosa-blush claro */
+  --line:      #f0d9e0;          /* linha sutil tom rosé */
   --danger:    #b3392c;
   --success:   #2f7a4a;
-  --shadow:    0 6px 24px rgba(31, 39, 66, 0.08);
+  --shadow:    0 6px 24px rgba(90, 32, 66, 0.10);
   --radius:    14px;
 }
 
@@ -24,10 +24,10 @@ html, body, #root { height: 100%; }
 
 body {
   margin: 0;
-  font-family: 'Georgia', 'Cambria', 'Times New Roman', serif;
+  font-family: 'Playfair Display', 'Cormorant Garamond', 'Georgia', 'Cambria', serif;
   background:
-    radial-gradient(1200px 600px at 100% -10%, rgba(184, 140, 63, .12), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(31, 39, 66, .08), transparent 60%),
+    radial-gradient(1200px 600px at 100% -10%, rgba(208, 90, 134, 0.14), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(90, 32, 66, 0.08), transparent 60%),
     var(--bg);
   color: var(--ink);
   font-size: 16px;
@@ -53,8 +53,8 @@ button { font-family: inherit; cursor: pointer; }
   justify-content: space-between;
   gap: 1rem;
   padding: 0.9rem 1.4rem;
-  background: var(--ink);
-  color: #fdf7e8;
+  background: linear-gradient(135deg, var(--ink) 0%, #7a2c52 100%);
+  color: #fff5f8;
   border-bottom: 3px solid var(--gold);
   box-shadow: var(--shadow);
 }
@@ -66,7 +66,7 @@ button { font-family: inherit; cursor: pointer; }
   font-weight: 700;
   letter-spacing: 0.3px;
   font-size: 1.15rem;
-  color: #fdf7e8;
+  color: #fff5f8;
 }
 .brand:hover { text-decoration: none; color: var(--gold-soft); }
 
@@ -79,12 +79,12 @@ button { font-family: inherit; cursor: pointer; }
 .nav-link {
   padding: 0.4rem 0.9rem;
   border-radius: 999px;
-  color: #fdf7e8;
+  color: #fff5f8;
   font-weight: 600;
   font-size: 0.95rem;
 }
-.nav-link:hover { background: rgba(255,255,255,.08); text-decoration: none; }
-.nav-link.active { background: var(--gold); color: var(--ink); }
+.nav-link:hover { background: rgba(255, 255, 255, 0.12); text-decoration: none; }
+.nav-link.active { background: var(--gold); color: #fff; }
 
 .app-main {
   flex: 1;
@@ -110,7 +110,8 @@ button { font-family: inherit; cursor: pointer; }
   place-items: center;
   padding: 2rem;
   background:
-    radial-gradient(800px 400px at 50% 0%, rgba(184, 140, 63, 0.15), transparent 60%),
+    radial-gradient(800px 400px at 50% 0%, rgba(208, 90, 134, 0.20), transparent 60%),
+    radial-gradient(600px 400px at 100% 100%, rgba(244, 184, 204, 0.30), transparent 60%),
     var(--bg);
 }
 
@@ -180,7 +181,7 @@ button { font-family: inherit; cursor: pointer; }
 .field select:focus,
 .field textarea:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(184, 140, 63, 0.15);
+  box-shadow: 0 0 0 3px rgba(208, 90, 134, 0.18);
 }
 
 .btn-primary,
@@ -194,10 +195,15 @@ button { font-family: inherit; cursor: pointer; }
   transition: transform .05s, background .15s, border-color .15s;
 }
 .btn-primary {
-  background: var(--ink);
-  color: #fdf7e8;
+  background: linear-gradient(135deg, var(--gold) 0%, #b84775 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(208, 90, 134, 0.25);
 }
-.btn-primary:hover { background: #2a3358; }
+.btn-primary:hover {
+  background: linear-gradient(135deg, #b84775 0%, var(--ink) 100%);
+  box-shadow: 0 4px 12px rgba(208, 90, 134, 0.35);
+}
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn-ghost {
@@ -219,15 +225,15 @@ button { font-family: inherit; cursor: pointer; }
 .btn-mini.btn-danger { color: var(--danger); }
 .btn-mini.btn-danger:hover { background: #f3d7d3; }
 
-/* Botão "Sair" no cabeçalho escuro - precisa de contraste claro */
+/* Botão "Sair" no cabeçalho bordô - precisa de contraste claro */
 .btn-logout {
   display: inline-flex;
   align-items: center;
   padding: 0.4rem 0.95rem;
   border-radius: 999px;
-  border: 1px solid rgba(253, 247, 232, 0.35);
+  border: 1px solid rgba(255, 245, 248, 0.4);
   background: transparent;
-  color: #fdf7e8;
+  color: #fff5f8;
   font-weight: 600;
   font-size: 0.9rem;
   letter-spacing: 0.3px;
@@ -236,7 +242,7 @@ button { font-family: inherit; cursor: pointer; }
 .btn-logout:hover {
   background: var(--gold);
   border-color: var(--gold);
-  color: var(--ink);
+  color: #fff;
 }
 .btn-logout:focus-visible {
   outline: 2px solid var(--gold-soft);
@@ -251,11 +257,11 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .alert-error {
-  background: #fbe4e0;
-  color: var(--danger);
+  background: #fde4ea;
+  color: #a13357;
   padding: 0.6rem 0.8rem;
   border-radius: 8px;
-  border: 1px solid #f1b9b1;
+  border: 1px solid #f1b9c8;
   font-size: 0.9rem;
 }
 
@@ -347,7 +353,7 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--ink-soft);
   border-bottom: 2px solid var(--gold);
 }
-.data-table tr:hover td { background: #fbf6e8; }
+.data-table tr:hover td { background: #fdf2f5; }
 .row-actions { white-space: nowrap; }
 .empty-row { text-align: center; color: var(--muted); padding: 1.5rem; }
 
@@ -430,7 +436,7 @@ button { font-family: inherit; cursor: pointer; }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(31, 39, 66, 0.55);
+  background: rgba(90, 32, 66, 0.45);
   backdrop-filter: blur(2px);
   display: grid;
   place-items: center;
@@ -496,7 +502,7 @@ button { font-family: inherit; cursor: pointer; }
   gap: 0.5rem;
   padding: 0.8rem 1.1rem;
   border-top: 1px solid var(--line);
-  background: #fbfaf5;
+  background: #fcf2f5;
 }
 
 /* ===== Loader ===== */
