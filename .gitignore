@@ -1,0 +1,27 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente (NUNCA commitar)
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+
+# Build
+dist/
+build/
+.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / sistema
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db
+
+# Planilha original (opcional - se quiser versionar, remova esta linha)
+# backend/src/scripts/lista-organistas.xlsx
