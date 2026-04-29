@@ -1,14 +1,34 @@
 {
   "name": "organistas",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Lista de Organistas - sobe backend + frontend juntos com um comando.",
+  "type": "module",
+  "description": "Lista de Organistas - frontend React + backend Express, deploy unificado na Vercel.",
   "scripts": {
-    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
-    "dev": "concurrently --names \"API,WEB\" --prefix-colors \"yellow,cyan\" \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
-    "import": "npm --prefix backend run import"
+    "dev": "concurrently --names \"API,WEB\" --prefix-colors \"yellow,cyan\" \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "nodemon --watch server --watch scripts/devServer.js scripts/devServer.js",
+    "dev:web": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite preview",
+    "import": "node scripts/importExcel.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "concurrently": "^9.0.1"
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.0.1",
+    "nodemon": "^3.1.7",
+    "vite": "^5.4.8"
   }
 }

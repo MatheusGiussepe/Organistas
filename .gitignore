@@ -5,8 +5,6 @@ node_modules/
 .env
 .env.local
 .env.*.local
-backend/.env
-frontend/.env
 
 # Build
 dist/
@@ -24,4 +22,4 @@ npm-debug.log*
 Thumbs.db
 
 # Planilha original (opcional - se quiser versionar, remova esta linha)
-# backend/src/scripts/lista-organistas.xlsx
+# scripts/lista-organistas.xlsx

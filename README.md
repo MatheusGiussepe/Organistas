@@ -8,37 +8,45 @@ Sistema simples para gerenciar a Lista de Organistas com:
   - `visualizador` → só vê a lista simplificada.
 - **3 telas**: login, lista detalhada (admin) e lista simplificada.
 - **Tema musical** suave (clave de sol, partitura, tons marfim/dourado/azul-noite).
-- **Backend**: Node.js + Express + Supabase (Postgres).
-- **Frontend**: React + Vite + React Router.
+- **Stack**: React + Vite (frontend) e Node.js + Express (backend) **no mesmo projeto**, deploy unificado na **Vercel** com **Supabase** (Postgres) como banco.
 
 ```
 Organistas/
-├── backend/                Node.js + Express + Supabase
-│   └── src/
-│       ├── index.js
-│       ├── routes/         auth.js, organistas.js
-│       ├── middleware/     auth.js (JWT)
-│       ├── db/             supabase.js
-│       └── scripts/        importExcel.js + lista-organistas.xlsx
-├── frontend/               React + Vite
-│   └── src/
-│       ├── pages/          Login.jsx, AdminList.jsx, SimpleList.jsx
-│       ├── components/     Layout.jsx, ProtectedRoute.jsx
-│       ├── context/        AuthContext.jsx
-│       ├── api/            client.js
-│       └── styles/         global.css
-├── supabase-schema.sql     SQL para criar a tabela
-└── README.md               (você está aqui)
+├── api/
+│   └── index.js              ← função serverless da Vercel (rotaeia /api/* pro Express)
+├── server/
+│   ├── app.js                ← app Express (sem listen)
+│   ├── routes/               ← auth.js, organistas.js
+│   ├── middleware/auth.js    ← verificação de JWT
+│   └── db/supabase.js        ← cliente do Supabase
+├── scripts/
+│   ├── devServer.js          ← roda o Express localmente em :4000
+│   ├── importExcel.js        ← importa a planilha pro banco
+│   └── lista-organistas.xlsx
+├── src/                      ← React (Vite)
+│   ├── pages/, components/, context/, api/, styles/
+│   ├── App.jsx, main.jsx
+├── index.html
+├── vite.config.js
+├── vercel.json               ← roteamento /api/* e SPA fallback
+├── package.json              ← UM só, com tudo
+├── .env.example
+├── supabase-schema.sql
+└── README.md
 ```
+
+> ⚠️ **Migração v2:** se você ainda vê pastas antigas `backend/` e `frontend/`,
+> apague elas (no Cursor: clique direito → Delete) junto com o `node_modules/`
+> antigo e o `package-lock.json`. Depois rode `npm install` na raiz.
 
 ---
 
-## ⚡ Caminho rápido (depois que tudo já está configurado)
+## ⚡ Caminho rápido
 
-Na **primeira vez** (instala dependências dos dois projetos de uma vez):
+Na **primeira vez** (instala dependências):
 
 ```bash
-npm run install:all
+npm install
 ```
 
 Pra **rodar o sistema** (sobe backend + frontend juntos num único terminal):
@@ -47,13 +55,14 @@ Pra **rodar o sistema** (sobe backend + frontend juntos num único terminal):
 npm run dev
 ```
 
-Você vai ver duas colunas no terminal: `[API]` (backend, amarelo) e `[WEB]` (frontend, ciano), rodando ao mesmo tempo. Abra <http://localhost:5173> no navegador. Pra parar, **Ctrl+C** no terminal — ele encerra os dois juntos.
+Você vai ver duas colunas no terminal: `[API]` (Express, amarelo) e `[WEB]` (Vite, ciano).
+Abra <http://localhost:5173> no navegador. Pra parar, **Ctrl+C** — encerra os dois juntos.
 
-> ⚠️ Esse comando pressupõe que você já fez o setup do `.env` do backend e do banco no Supabase. Se ainda não, siga o **Passo a passo** logo abaixo.
+> Pressupõe que você já fez o setup do `.env` e do banco no Supabase. Se ainda não, siga abaixo.
 
 ---
 
-## Passo a passo (no Cursor)
+## Setup completo (passo a passo)
 
 ### 1. Criar projeto no Supabase
 
@@ -63,17 +72,16 @@ Você vai ver duas colunas no terminal: `[API]` (backend, amarelo) e `[WEB]` (fr
 3. Em **Settings → API** copie:
    - `Project URL` → vai em `SUPABASE_URL`.
    - `service_role` (a chave secreta) → vai em `SUPABASE_SERVICE_ROLE_KEY`.
+
    > A `service_role` **não** deve ser exposta no frontend; ela é usada **apenas** pelo backend.
 
-### 2. Backend (API)
+### 2. Configurar `.env`
 
 ```bash
-cd backend
-npm install
 cp .env.example .env       # no Windows: copy .env.example .env
 ```
 
-Abra `backend/.env` e preencha:
+Abra `.env` e preencha:
 
 - `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` (do passo 1).
 - `JWT_SECRET` → string longa e aleatória. Sugestão:
@@ -83,9 +91,9 @@ Abra `backend/.env` e preencha:
 - `ADMIN_USERNAME` / `ADMIN_PASSWORD` → credenciais do admin.
 - `VIEWER_USERNAME` / `VIEWER_PASSWORD` → credenciais do visualizador.
 
-#### Importar a planilha (rodar uma única vez)
+### 3. Importar a planilha (rodar uma única vez)
 
-A planilha já está copiada em `backend/src/scripts/lista-organistas.xlsx`.
+A planilha já está em `scripts/lista-organistas.xlsx`.
 
 ```bash
 npm run import
@@ -94,41 +102,66 @@ npm run import
 Saída esperada:
 
 ```
-📖 Lendo planilha: .../lista-organistas.xlsx
-✅ 350 registros prontos para importar.
+📖 Lendo planilha: .../scripts/lista-organistas.xlsx
+✅ 218 registros prontos para importar.
 🧹 Limpando tabela "organistas" antes de inserir...
-  -> 350/350
+  -> 218/218
 🎉 Importação concluída com sucesso.
 ```
 
 > Para **adicionar** sem apagar o que já existe: `npm run import -- --append`.
 > Para usar **outro arquivo**: `npm run import -- caminho/da/planilha.xlsx`.
 
-#### Rodar a API
+### 4. Rodar localmente
 
 ```bash
-npm run dev          # com auto-reload (nodemon)
-# ou
-npm start            # produção
-```
-
-A API sobe em `http://localhost:4000`. Teste: <http://localhost:4000/api/health>.
-
-### 3. Frontend (React)
-
-Em outro terminal:
-
-```bash
-cd frontend
 npm install
-cp .env.example .env       # no Windows: copy .env.example .env
 npm run dev
 ```
 
-Abra <http://localhost:5173> e faça login com as credenciais que você definiu no `.env` do backend.
+API: <http://localhost:4000/api/health> &nbsp;·&nbsp; Site: <http://localhost:5173>
 
-> Em desenvolvimento, o Vite faz proxy de `/api` para `http://localhost:4000`,
-> então você não precisa preencher `VITE_API_URL` enquanto roda local.
+---
+
+## 🚀 Deploy na Vercel (frontend + backend juntos)
+
+### 1. Subir o código pro GitHub
+
+```bash
+git init        # se ainda não for um repo
+git add .
+git commit -m "primeira versao"
+# crie um repo no github.com e:
+git remote add origin https://github.com/SEU-USUARIO/organistas.git
+git push -u origin main
+```
+
+### 2. Importar na Vercel
+
+1. Vá em <https://vercel.com> → **Add new → Project**.
+2. Selecione o repositório do GitHub.
+3. Em **Configure**: a Vercel detecta o Vite automaticamente. Não precisa mudar nada.
+4. Em **Environment variables**, adicione **as mesmas do `.env`**:
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `JWT_SECRET`
+   - `JWT_EXPIRES_IN` (`7d`)
+   - `ADMIN_USERNAME` e `ADMIN_PASSWORD`
+   - `VIEWER_USERNAME` e `VIEWER_PASSWORD`
+5. Clique **Deploy**.
+
+Pronto. A URL final (ex.: `https://organistas.vercel.app`) serve **as telas**, e
+`https://organistas.vercel.app/api/...` é o **backend**, no mesmo domínio. Sem CORS, sem deploy duplo.
+
+### 3. Importar a planilha pro Supabase de produção
+
+Continue rodando localmente, apontando o `.env` pro mesmo Supabase usado em produção:
+
+```bash
+npm run import
+```
+
+Funções serverless da Vercel **não** são apropriadas pra rodar import de planilha (são limitadas a poucos segundos), por isso fazemos isso da sua máquina mesmo. É só garantir que o `.env` aponte pra `SUPABASE_URL` certa.
 
 ---
 
@@ -144,55 +177,16 @@ Abra <http://localhost:5173> e faça login com as credenciais que você definiu 
 
 ---
 
-## Deploy (Vercel + Supabase)
-
-### Backend → Railway / Render (recomendado)
-
-A Vercel também roda Node.js, mas para um Express tradicional o caminho mais
-simples é hospedar o backend em [Railway](https://railway.app) ou [Render](https://render.com)
-(ambos têm plano grátis).
-
-1. Faça push do repositório no GitHub.
-2. Em Railway/Render, **New service → Deploy from GitHub** → selecione a pasta `backend/`.
-3. Configure as variáveis de ambiente (mesmas do `.env`).
-4. Comando de start: `npm start`. Porta: a plataforma define via `PORT` (já é lido pelo código).
-5. Anote a URL pública (ex.: `https://organistas-api.up.railway.app`).
-
-### Frontend → Vercel
-
-1. Em <https://vercel.com> → **Add new → Project** → selecione o repo, e na hora de configurar
-   defina **Root Directory = `frontend`**.
-2. Em **Environment variables**, adicione:
-   - `VITE_API_URL` = URL pública do backend (ex.: `https://organistas-api.up.railway.app`).
-3. Build command: `npm run build`. Output: `dist`.
-4. No backend, atualize `CORS_ORIGIN` para incluir o domínio da Vercel
-   (ex.: `https://organistas.vercel.app`).
-
----
-
-## Como adicionar mais usuários depois
-
-O sistema atual é proposital: 2 perfis fixos, controlados pelo `.env`. Se um dia precisar de
-mais usuários, dá pra evoluir em duas direções:
-
-- **Lista de usuários no `.env`** (ex.: `USERS_JSON='[{"u":"maria","p":"...","role":"admin"}]'`)
-  — simples, sem banco extra.
-- **Tabela `usuarios` no Supabase** com senhas em **bcrypt** — mais robusto, com cadastro/edição
-  pela interface do admin.
-
-Avise se quiser que eu evolua nessa direção.
-
----
-
 ## Troubleshooting
 
 | Sintoma                                      | Causa provável / Solução                                                |
 | -------------------------------------------- | ----------------------------------------------------------------------- |
 | `Token inválido ou expirado`                 | Passou de 7 dias, ou `JWT_SECRET` foi trocado. Faça login de novo.      |
-| `Falha ao carregar` no frontend              | Backend não está rodando, ou `VITE_API_URL`/proxy mal configurado.      |
+| `Falha ao carregar` no frontend              | Backend não rodou — confira o terminal do `npm run dev`.                |
 | Importação falha com "permission denied"     | A chave usada no `.env` precisa ser a `service_role`, não a `anon`.     |
-| `CORS error` no console                      | Adicione o domínio do frontend em `CORS_ORIGIN` no `.env` do backend.   |
+| `404 /api/...` em produção                   | Confira se o `vercel.json` está na raiz e tem o rewrite `/api/:path*`.  |
 | Tabela "organistas" não existe               | Rode `supabase-schema.sql` no SQL Editor do Supabase.                   |
+| `npm run dev` reclama de variáveis faltando  | Crie `.env` a partir do `.env.example` e preencha tudo.                 |
 
 ---
 

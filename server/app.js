@@ -5,11 +5,12 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import organistasRoutes from './routes/organistas.js';
 
+// Em dev/local lê o .env do projeto. Na Vercel as variáveis vêm injetadas pela própria plataforma.
 dotenv.config();
 
 // ===== Validação das variáveis de ambiente =====
-// Se algo estiver faltando, encerramos o processo com uma mensagem clara
-// (em vez de deixar a API subir e quebrar com 500 a cada requisição).
+// Em ambiente serverless (Vercel), em vez de dar process.exit, só logamos o aviso —
+// pra não derrubar a função em cold start. Localmente, queremos parar o processo cedo.
 const REQUIRED_ENV = [
   'SUPABASE_URL',
   'SUPABASE_SERVICE_ROLE_KEY',
@@ -21,15 +22,20 @@ const REQUIRED_ENV = [
 ];
 const missing = REQUIRED_ENV.filter((k) => !process.env[k]);
 if (missing.length) {
-  console.error('\n❌ Variáveis de ambiente faltando no backend/.env:');
-  for (const k of missing) console.error(`   - ${k}`);
-  console.error('\nDica: copie backend/.env.example -> backend/.env e preencha tudo.\n');
-  process.exit(1);
+  const msg = `Variáveis de ambiente faltando: ${missing.join(', ')}`;
+  if (process.env.VERCEL) {
+    console.error(`[env] ${msg}`);
+  } else {
+    console.error('\n❌ ' + msg);
+    console.error('Dica: copie .env.example -> .env e preencha tudo.\n');
+    process.exit(1);
+  }
 }
 
 const app = express();
 
-// CORS - aceita lista de origens separadas por vírgula
+// CORS - aceita lista de origens separadas por vírgula.
+// Na Vercel, frontend e backend ficam no mesmo domínio, então CORS basicamente não importa.
 const corsOrigins = (process.env.CORS_ORIGIN || '*')
   .split(',')
   .map((s) => s.trim())
@@ -42,8 +48,14 @@ app.use(cors({
 
 app.use(express.json({ limit: '1mb' }));
 
+// Rate-limit / proxy: a Vercel é um proxy, então confiamos nos headers.
+// Sem isso, o express-rate-limit reclama no log.
+app.set('trust proxy', 1);
+
 // Healthcheck simples
-app.get('/api/health', (_req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
+app.get('/api/health', (_req, res) =>
+  res.json({ ok: true, ts: new Date().toISOString(), env: process.env.VERCEL ? 'vercel' : 'local' })
+);
 
 // Rotas
 app.use('/api/auth', authRoutes);
@@ -55,17 +67,10 @@ app.use((req, res) => res.status(404).json({ error: 'Rota não encontrada.' }));
 // Tratamento global de erros - em dev mostra a mensagem real
 app.use((err, _req, res, _next) => {
   console.error('[erro]', err);
-  const isProd = process.env.NODE_ENV === 'production';
+  const isProd = process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV?.startsWith('preview');
   res.status(500).json({
     error: isProd ? 'Erro interno no servidor.' : (err.message || 'Erro interno'),
   });
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`\n🎵 API Organistas rodando em http://localhost:${PORT}`);
-  console.log(`   Healthcheck: http://localhost:${PORT}/api/health`);
-  console.log(`   Admin:       ${process.env.ADMIN_USERNAME}`);
-  console.log(`   Visualizador: ${process.env.VIEWER_USERNAME}`);
-  console.log(`   CORS origin: ${process.env.CORS_ORIGIN || '(todos)'}\n`);
-});
+export default app;

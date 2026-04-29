@@ -135,7 +135,7 @@ export default function AdminList() {
         }
       >
         <div className="grid">
-          <Field label="Estado *">
+          <Field label="Estado">
             <select value={form.estado || ''} onChange={(e) => setForm({ ...form, estado: e.target.value })}>
               <option value="">Selecione…</option>
               {ESTADOS_BR.map((e) => <option key={e} value={e}>{e}</option>)}
@@ -185,13 +185,13 @@ export default function AdminList() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Estado</th>
-                <th>Cidade</th>
-                <th>Nome</th>
                 <th>Examinadora</th>
                 <th>Encarregado</th>
-                <th>Local de culto</th>
+                <th>Nome</th>
                 <th>Status</th>
+                <th>Estado</th>
+                <th>Cidade</th>
+                <th>Local de culto</th>
                 <th>Telefone</th>
                 <th>Obs.</th>
                 <th aria-label="ações"></th>
@@ -200,13 +200,13 @@ export default function AdminList() {
             <tbody>
               {filtered.map((it) => (
                 <tr key={it.id}>
-                  <td>{it.estado}</td>
-                  <td>{it.cidade || '—'}</td>
-                  <td>{it.nome || '—'}</td>
-                  <td>{it.examinadora || '—'}</td>
+                  <td>{it.examinadora}</td>
                   <td>{it.encarregado || '—'}</td>
-                  <td>{it.local_culto || '—'}</td>
+                  <td>{it.nome || '—'}</td>
                   <td>{it.status || '—'}</td>
+                  <td>{it.estado || '—'}</td>
+                  <td>{it.cidade || '—'}</td>
+                  <td>{it.local_culto || '—'}</td>
                   <td>{it.telefone || '—'}</td>
                   <td title={it.observacoes || ''}>
                     {it.observacoes ? (it.observacoes.length > 30 ? it.observacoes.slice(0, 30) + '…' : it.observacoes) : '—'}

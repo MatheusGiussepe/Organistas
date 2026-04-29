@@ -3,7 +3,7 @@
  * e popula a tabela `organistas` no Supabase.
  *
  * Uso:
- *   npm run import                 -> usa src/scripts/lista-organistas.xlsx
+ *   npm run import                 -> usa scripts/lista-organistas.xlsx
  *   npm run import -- ./outra.xlsx -> usa o arquivo informado
  *
  * O script é idempotente: por padrão LIMPA a tabela antes de inserir.
@@ -14,7 +14,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import xlsx from 'xlsx';
-import { supabase } from '../db/supabase.js';
+import { supabase } from '../server/db/supabase.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -84,6 +84,20 @@ const clean = (v) => {
 // Remove acentos para comparação tolerante (a planilha tem "GOIAS", "CEARA", etc.)
 const semAcento = (s) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
+// Sinônimos / erros de digitação conhecidos da planilha original
+// (ex.: a planilha escreve "TOCANTIS" em vez de "TOCANTINS").
+const SINONIMOS_ESTADO = new Map([
+  ['TOCANTIS', 'TOCANTINS'],
+  ['SP', 'SÃO PAULO'],
+  ['RJ', 'RIO DE JANEIRO'],
+  ['MG', 'MINAS GERAIS'],
+  ['BA', 'BAHIA'],
+  ['PR', 'PARANÁ'],
+  ['SC', 'SANTA CATARINA'],
+  ['RS', 'RIO GRANDE DO SUL'],
+  ['DF', 'DISTRITO FEDERAL'],
+]);
+
 // Mapa: versão sem acento (uppercase) -> nome canônico com acento
 const ESTADOS_BR_NORMALIZADO = new Map(
   [...ESTADOS_VALIDOS].map((e) => [semAcento(e).toUpperCase(), e])
@@ -103,6 +117,10 @@ function normalizarEstado(nomeBruto) {
   const original = nomeBruto.trim();
   const chave = semAcento(original).toUpperCase().replace(/\s+/g, ' ');
 
+  // Tenta sinônimos primeiro (erros de digitação, siglas)
+  if (SINONIMOS_ESTADO.has(chave)) {
+    return { estado: SINONIMOS_ESTADO.get(chave), pais: null };
+  }
   if (ESTADOS_BR_NORMALIZADO.has(chave)) {
     return { estado: ESTADOS_BR_NORMALIZADO.get(chave), pais: null };
   }
@@ -112,6 +130,21 @@ function normalizarEstado(nomeBruto) {
   // Qualquer país conhecido OU qualquer "estado" desconhecido vira INTERNACIONAL,
   // preservando o nome original como país.
   return { estado: 'INTERNACIONAL', pais: original };
+}
+
+/**
+ * Identifica se um texto na coluna "Examinadora" é, na verdade, uma linha-cabeçalho
+ * (ex.: "ACRE", "GOIAS", "ITÁLIA"). Aceita estados BR com ou sem acento e países conhecidos.
+ */
+function pareceCabecalhoEstado(texto) {
+  if (!texto) return false;
+  const chave = semAcento(texto).toUpperCase().replace(/\s+/g, ' ').trim();
+  return (
+    SINONIMOS_ESTADO.has(chave) ||
+    ESTADOS_BR_NORMALIZADO.has(chave) ||
+    PAISES_INTERNACIONAIS_NORMALIZADO.has(chave) ||
+    chave === 'INTERNACIONAL'
+  );
 }
 
 const records = [];
@@ -132,12 +165,7 @@ for (let i = 1; i < rows.length; i++) {
     const norm = normalizarEstado(estadoNaCol);
     estadoAtual = norm.estado;
     paisAtual = norm.pais;
-  } else if (
-    possivelHeaderEstado &&
-    (ESTADOS_VALIDOS.has(possivelHeaderEstado.toUpperCase()) ||
-     PAISES_INTERNACIONAIS.has(possivelHeaderEstado.toUpperCase())) &&
-    !clean(row[COL.nome])
-  ) {
+  } else if (possivelHeaderEstado && !clean(row[COL.nome]) && pareceCabecalhoEstado(possivelHeaderEstado)) {
     const norm = normalizarEstado(possivelHeaderEstado);
     estadoAtual = norm.estado;
     paisAtual = norm.pais;
