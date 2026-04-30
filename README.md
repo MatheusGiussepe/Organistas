@@ -2,6 +2,7 @@
 
 # 🎵 Lista de Organistas
 
+<<<<<<< HEAD
 **Sistema web para cadastrar, organizar e visualizar a lista de organistas, com login seguro e dois níveis de acesso.**
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
@@ -155,6 +156,15 @@ O projeto foi pensado pra rodar **inteiro num só deploy na Vercel** — fronten
 ---
 
 ## 📁 Estrutura do projeto
+=======
+- **Login** com sessão de **7 dias** (token JWT salvo no navegador).
+- **2 perfis fixos**:
+  - `admin` → vê e edita a lista detalhada (CRUD completo).
+  - `visualizador` → só vê a lista simplificada.
+- **3 telas**: login, lista detalhada (admin) e lista simplificada.
+- **Tema musical** suave (clave de sol, partitura, tons rosas).
+- **Stack**: React + Vite (frontend) e Node.js + Express (backend) **no mesmo projeto**, deploy unificado na **Vercel** com **Supabase** (Postgres) como banco.
+>>>>>>> a9ca4b99dab128815c31bd4058e62f9a1e214e54
 
 ```
 organistas/
@@ -187,6 +197,7 @@ organistas/
 └── .env.example
 ```
 
+<<<<<<< HEAD
 ---
 
 ## 🔑 Variáveis de ambiente
@@ -211,6 +222,14 @@ Todas configuradas no `.env` (local) ou no painel da Vercel (produção).
 1. `POST /api/auth/login` recebe `{ username, password }` e compara com as variáveis do `.env`.
 2. Se baterem, devolve um **JWT** assinado com `JWT_SECRET`, validade `JWT_EXPIRES_IN`.
 3. O frontend guarda o token em `localStorage` (`organistas_token`).
+=======
+
+## Como funciona o login (resumo técnico)
+
+1. `POST /api/auth/login` recebe `{ username, password }` e compara com o `.env`.
+2. Se baterem, devolve um **JWT** assinado com `JWT_SECRET`, validade `JWT_EXPIRES_IN` (padrão `7d`).
+3. O frontend guarda esse token em `localStorage` (`organistas_token`).
+>>>>>>> a9ca4b99dab128815c31bd4058e62f9a1e214e54
 4. Em toda chamada à API, o cliente envia `Authorization: Bearer <token>`.
 5. O middleware `requireAuth` valida o token a cada requisição; se expirou, o frontend desloga automaticamente.
 6. Para rotas de escrita, o `requireAdmin` exige `role === 'admin'`.
