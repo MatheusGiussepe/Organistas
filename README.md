@@ -239,14 +239,6 @@ Todas configuradas no `.env` (local) ou no painel da Vercel (produção).
 
 ---
 
-## 📄 Licença
-
-Distribuído sob a licença **MIT**. Veja [`LICENSE`](./LICENSE) para mais informações.
-
-> 💡 Se ainda não tiver o arquivo `LICENSE`, crie um na raiz com [este texto](https://opensource.org/license/mit) e substitua "[ano]" e "[nome]" pelos seus dados.
-
----
-
 ## 👤 Autor
 
 **Matheus Giussepe**
