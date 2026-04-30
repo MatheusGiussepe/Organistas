@@ -226,33 +226,6 @@ Todas configuradas no `.env` (local) ou no painel da Vercel (produção).
 
 ---
 
-## 🗺️ Roadmap
-
-Ideias pra evoluir (contribuições bem-vindas!):
-
-- [ ] Cadastro de usuários direto pelo painel (em vez de fixos no `.env`).
-- [ ] Exportação da lista pra Excel a partir da interface.
-- [ ] Histórico/auditoria de edições.
-- [ ] Modo escuro.
-- [ ] Notificações por e-mail quando uma organista é cadastrada.
-- [ ] PWA (instalar no celular como app).
-
----
-
-## 🤝 Contribuindo
-
-Pull requests são bem-vindos! Pra mudanças grandes, abra primeiro uma _issue_ pra discutirmos a ideia.
-
-```bash
-# fork → clone → branch nova
-git checkout -b feature/minha-ideia
-# faça suas alterações, commit, push
-git push origin feature/minha-ideia
-# abra um Pull Request no GitHub
-```
-
----
-
 ## 🐛 Troubleshooting
 
 | Sintoma | Causa provável / Solução |
@@ -278,7 +251,7 @@ Distribuído sob a licença **MIT**. Veja [`LICENSE`](./LICENSE) para mais infor
 
 **Matheus Giussepe**
 
-- GitHub: [@SEU-USUARIO](https://github.com/SEU-USUARIO)
+- GitHub: https://github.com/MatheusGiussepe
 - E-mail: mgiussepe26@gmail.com
 
 ---
