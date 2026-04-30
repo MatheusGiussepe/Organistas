@@ -48,16 +48,6 @@ A ideia central é simples: **fácil de mexer, leve, bonito e seguro o bastante*
 
 ---
 
-## 🖼️ Telas
-
-> 💡 _Coloque aqui prints das telas. Sugestão: criar uma pasta `docs/` e referenciar com `![Login](docs/login.png)`._
-
-| Login | Lista detalhada (admin) | Lista simplificada |
-| :---: | :---: | :---: |
-| _print_ | _print_ | _print_ |
-
----
-
 ## 🛠️ Stack tecnológica
 
 | Camada | Tecnologias |
