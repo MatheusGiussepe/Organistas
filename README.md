@@ -28,7 +28,7 @@ Este projeto nasceu da necessidade de **organizar a lista de organistas** de for
 
 A ideia central é simples: **fácil de mexer, leve, bonito e seguro o bastante** pra ser usado pela comunidade.
 
-🌐 **Demo online:** _adicione aqui a URL do seu deploy (ex.: https://organistas.vercel.app)_
+🌐 **Demo online:** https://organistas.vercel.app
 
 ---
 
