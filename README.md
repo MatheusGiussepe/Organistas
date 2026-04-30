@@ -1,193 +1,283 @@
-# Lista de Organistas
+<div align="center">
 
-Sistema simples para gerenciar a Lista de Organistas com:
+# 🎵 Lista de Organistas
 
-- **Login** com sessão de **7 dias** (token JWT salvo no navegador).
-- **2 perfis fixos**:
-  - `admin` → vê e edita a lista detalhada (CRUD completo).
-  - `visualizador` → só vê a lista simplificada.
-- **3 telas**: login, lista detalhada (admin) e lista simplificada.
-- **Tema musical** suave (clave de sol, partitura, tons marfim/dourado/azul-noite).
-- **Stack**: React + Vite (frontend) e Node.js + Express (backend) **no mesmo projeto**, deploy unificado na **Vercel** com **Supabase** (Postgres) como banco.
+**Sistema web para cadastrar, organizar e visualizar a lista de organistas, com login seguro e dois níveis de acesso.**
+
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
+
+[Sobre](#-sobre-o-projeto) ·
+[Funcionalidades](#-funcionalidades) ·
+[Stack](#-stack-tecnológica) ·
+[Como rodar](#-como-rodar-localmente) ·
+[Deploy](#-deploy-na-vercel) ·
+[Variáveis de ambiente](#-variáveis-de-ambiente)
+
+</div>
+
+---
+
+## 📖 Sobre o projeto
+
+Este projeto nasceu da necessidade de **organizar a lista de organistas** de forma mais prática do que uma planilha solta — com login, controle de acesso e duas formas de visualização (uma completa pra quem administra e outra simplificada pra leigos).
+
+A ideia central é simples: **fácil de mexer, leve, bonito e seguro o bastante** pra ser usado pela comunidade.
+
+🌐 **Demo online:** _adicione aqui a URL do seu deploy (ex.: https://organistas.vercel.app)_
+
+---
+
+## ✨ Funcionalidades
+
+- 🔐 **Login com sessão de 7 dias** — JWT salvo no navegador, expira automaticamente.
+- 👥 **Dois perfis de acesso**:
+  - **Administrador** — vê e edita a lista detalhada (CRUD completo).
+  - **Visualizador** — acesso apenas à lista simplificada.
+- 📋 **Tela detalhada** com tabela, busca, filtro por estado e modal de edição.
+- 📱 **Tela simplificada** com cards agrupados por estado, fonte maior — pensada pra quem tem menos familiaridade com tecnologia.
+- 🇧🇷 **Suporte completo aos 26 estados brasileiros + DF**, com normalização de acentos e correção de typos comuns.
+- 🌍 **Categoria "INTERNACIONAL"** para organistas fora do Brasil — sempre exibida ao final da lista.
+- 📊 **Importação automática** a partir de arquivo Excel (`.xlsx`).
+- 🎨 **Visual delicado** com tons de rosa-blush e bordô, fonte Playfair Display, ícones musicais.
+- 🚀 **Deploy unificado na Vercel** — frontend e backend num mesmo domínio, sem CORS.
+
+---
+
+## 🖼️ Telas
+
+> 💡 _Coloque aqui prints das telas. Sugestão: criar uma pasta `docs/` e referenciar com `![Login](docs/login.png)`._
+
+| Login | Lista detalhada (admin) | Lista simplificada |
+| :---: | :---: | :---: |
+| _print_ | _print_ | _print_ |
+
+---
+
+## 🛠️ Stack tecnológica
+
+| Camada | Tecnologias |
+| --- | --- |
+| **Frontend** | React 18 · Vite 5 · React Router 6 · CSS puro com variáveis |
+| **Backend** | Node.js · Express 4 · JWT · express-rate-limit |
+| **Banco de dados** | Supabase (Postgres gerenciado) |
+| **Hospedagem** | Vercel (frontend + serverless function pro Express) |
+| **Importação** | xlsx (SheetJS) |
+
+---
+
+## 🚀 Como rodar localmente
+
+### Pré-requisitos
+
+- [Node.js](https://nodejs.org/) 18+ instalado.
+- Uma conta gratuita no [Supabase](https://supabase.com).
+
+### 1. Clonar e instalar
+
+```bash
+git clone https://github.com/SEU-USUARIO/organistas.git
+cd organistas
+npm install
+```
+
+### 2. Criar o banco no Supabase
+
+1. Crie um novo projeto em <https://supabase.com>.
+2. Abra **SQL Editor → New query**, cole o conteúdo de [`supabase-schema.sql`](./supabase-schema.sql) e clique **Run**.
+3. Em **Settings → API**, copie:
+   - `Project URL` → será `SUPABASE_URL`.
+   - `service_role` (chave secreta) → será `SUPABASE_SERVICE_ROLE_KEY`.
+
+### 3. Configurar `.env`
+
+```bash
+cp .env.example .env
+```
+
+Preencha com os valores do passo anterior + JWT_SECRET aleatório (gere com `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`) e usuários/senhas dos dois perfis.
+
+### 4. Importar a planilha (opcional)
+
+Se você tem o arquivo `lista-organistas.xlsx` em `scripts/`, basta:
+
+```bash
+npm run import
+```
+
+### 5. Rodar
+
+```bash
+npm run dev
+```
+
+Abra <http://localhost:5173> e faça login.
+
+---
+
+## ☁️ Deploy na Vercel
+
+O projeto foi pensado pra rodar **inteiro num só deploy na Vercel** — frontend e backend convivem no mesmo domínio.
+
+### Passo a passo
+
+1. **Suba o código pro GitHub:**
+
+   ```bash
+   git add .
+   git commit -m "primeira versão"
+   git push origin main
+   ```
+
+2. **Conecte na Vercel:**
+   - Acesse <https://vercel.com> → **Add new → Project**.
+   - Selecione o repositório.
+   - A Vercel detecta o Vite automaticamente — não mude as configs.
+
+3. **Configure as variáveis de ambiente** (Settings → Environment Variables):
+
+   | Variável | Exemplo |
+   | --- | --- |
+   | `SUPABASE_URL` | `https://xxx.supabase.co` |
+   | `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGciOi...` |
+   | `JWT_SECRET` | string aleatória longa |
+   | `JWT_EXPIRES_IN` | `7d` |
+   | `ADMIN_USERNAME` / `ADMIN_PASSWORD` | seu admin |
+   | `VIEWER_USERNAME` / `VIEWER_PASSWORD` | seu visualizador |
+
+4. **Deploy.** A URL final serve as telas (`/`) e a API (`/api/...`) no mesmo domínio.
+
+> ⚠️ A importação da planilha (`npm run import`) **não roda na Vercel** (funções serverless são limitadas a poucos segundos). Rode local apontando o `.env` pro Supabase de produção, ou cole os dados direto no SQL Editor.
+
+---
+
+## 📁 Estrutura do projeto
 
 ```
-Organistas/
+organistas/
 ├── api/
-│   └── index.js              ← função serverless da Vercel (rotaeia /api/* pro Express)
+│   └── index.js              # função serverless da Vercel (envelopa o Express)
 ├── server/
-│   ├── app.js                ← app Express (sem listen)
-│   ├── routes/               ← auth.js, organistas.js
-│   ├── middleware/auth.js    ← verificação de JWT
-│   └── db/supabase.js        ← cliente do Supabase
+│   ├── app.js                # Express app (sem listen)
+│   ├── routes/
+│   │   ├── auth.js           # POST /api/auth/login, GET /api/auth/me
+│   │   └── organistas.js     # CRUD em /api/organistas
+│   ├── middleware/
+│   │   └── auth.js           # requireAuth + requireAdmin (JWT)
+│   └── db/
+│       └── supabase.js       # cliente Supabase
 ├── scripts/
-│   ├── devServer.js          ← roda o Express localmente em :4000
-│   ├── importExcel.js        ← importa a planilha pro banco
+│   ├── devServer.js          # roda o Express localmente em :4000
+│   ├── importExcel.js        # importa a planilha pro banco
 │   └── lista-organistas.xlsx
-├── src/                      ← React (Vite)
-│   ├── pages/, components/, context/, api/, styles/
-│   ├── App.jsx, main.jsx
+├── src/                      # React (Vite)
+│   ├── pages/                # Login, AdminList, SimpleList
+│   ├── components/           # Layout, Modal, ProtectedRoute
+│   ├── context/              # AuthContext (token + auto-login)
+│   ├── api/                  # cliente HTTP com JWT
+│   └── styles/               # CSS global (tema rosa)
 ├── index.html
 ├── vite.config.js
-├── vercel.json               ← roteamento /api/* e SPA fallback
-├── package.json              ← UM só, com tudo
-├── .env.example
+├── vercel.json               # roteamento /api/* + SPA fallback
+├── package.json              # dependências do projeto inteiro
 ├── supabase-schema.sql
-└── README.md
+└── .env.example
 ```
-
-> ⚠️ **Migração v2:** se você ainda vê pastas antigas `backend/` e `frontend/`,
-> apague elas (no Cursor: clique direito → Delete) junto com o `node_modules/`
-> antigo e o `package-lock.json`. Depois rode `npm install` na raiz.
 
 ---
 
-## ⚡ Caminho rápido
+## 🔑 Variáveis de ambiente
 
-Na **primeira vez** (instala dependências):
+Todas configuradas no `.env` (local) ou no painel da Vercel (produção).
 
-```bash
-npm install
-```
-
-Pra **rodar o sistema** (sobe backend + frontend juntos num único terminal):
-
-```bash
-npm run dev
-```
-
-Você vai ver duas colunas no terminal: `[API]` (Express, amarelo) e `[WEB]` (Vite, ciano).
-Abra <http://localhost:5173> no navegador. Pra parar, **Ctrl+C** — encerra os dois juntos.
-
-> Pressupõe que você já fez o setup do `.env` e do banco no Supabase. Se ainda não, siga abaixo.
+| Variável | Obrigatória | Descrição |
+| --- | :---: | --- |
+| `SUPABASE_URL` | ✅ | URL do projeto no Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Chave `service_role` (nunca exponha no frontend) |
+| `JWT_SECRET` | ✅ | String aleatória usada para assinar tokens JWT |
+| `JWT_EXPIRES_IN` | ❌ | Duração do token (padrão: `7d`) |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | ✅ | Credenciais do administrador |
+| `VIEWER_USERNAME` / `VIEWER_PASSWORD` | ✅ | Credenciais do visualizador |
+| `PORT` | ❌ | Porta do backend local (padrão: `4000`) |
+| `CORS_ORIGIN` | ❌ | Origens permitidas em CORS (padrão: `*`) |
 
 ---
 
-## Setup completo (passo a passo)
+## 🔐 Como funciona o login (resumo técnico)
 
-### 1. Criar projeto no Supabase
-
-1. Vá em <https://supabase.com> → **New project**.
-2. Quando o projeto subir, abra **SQL Editor → New query**, cole o conteúdo de
-   [`supabase-schema.sql`](./supabase-schema.sql) e clique **Run**.
-3. Em **Settings → API** copie:
-   - `Project URL` → vai em `SUPABASE_URL`.
-   - `service_role` (a chave secreta) → vai em `SUPABASE_SERVICE_ROLE_KEY`.
-
-   > A `service_role` **não** deve ser exposta no frontend; ela é usada **apenas** pelo backend.
-
-### 2. Configurar `.env`
-
-```bash
-cp .env.example .env       # no Windows: copy .env.example .env
-```
-
-Abra `.env` e preencha:
-
-- `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` (do passo 1).
-- `JWT_SECRET` → string longa e aleatória. Sugestão:
-  ```bash
-  node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-  ```
-- `ADMIN_USERNAME` / `ADMIN_PASSWORD` → credenciais do admin.
-- `VIEWER_USERNAME` / `VIEWER_PASSWORD` → credenciais do visualizador.
-
-### 3. Importar a planilha (rodar uma única vez)
-
-A planilha já está em `scripts/lista-organistas.xlsx`.
-
-```bash
-npm run import
-```
-
-Saída esperada:
-
-```
-📖 Lendo planilha: .../scripts/lista-organistas.xlsx
-✅ 218 registros prontos para importar.
-🧹 Limpando tabela "organistas" antes de inserir...
-  -> 218/218
-🎉 Importação concluída com sucesso.
-```
-
-> Para **adicionar** sem apagar o que já existe: `npm run import -- --append`.
-> Para usar **outro arquivo**: `npm run import -- caminho/da/planilha.xlsx`.
-
-### 4. Rodar localmente
-
-```bash
-npm install
-npm run dev
-```
-
-API: <http://localhost:4000/api/health> &nbsp;·&nbsp; Site: <http://localhost:5173>
-
----
-
-## 🚀 Deploy na Vercel (frontend + backend juntos)
-
-### 1. Subir o código pro GitHub
-
-```bash
-git init        # se ainda não for um repo
-git add .
-git commit -m "primeira versao"
-# crie um repo no github.com e:
-git remote add origin https://github.com/SEU-USUARIO/organistas.git
-git push -u origin main
-```
-
-### 2. Importar na Vercel
-
-1. Vá em <https://vercel.com> → **Add new → Project**.
-2. Selecione o repositório do GitHub.
-3. Em **Configure**: a Vercel detecta o Vite automaticamente. Não precisa mudar nada.
-4. Em **Environment variables**, adicione **as mesmas do `.env`**:
-   - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `JWT_SECRET`
-   - `JWT_EXPIRES_IN` (`7d`)
-   - `ADMIN_USERNAME` e `ADMIN_PASSWORD`
-   - `VIEWER_USERNAME` e `VIEWER_PASSWORD`
-5. Clique **Deploy**.
-
-Pronto. A URL final (ex.: `https://organistas.vercel.app`) serve **as telas**, e
-`https://organistas.vercel.app/api/...` é o **backend**, no mesmo domínio. Sem CORS, sem deploy duplo.
-
-### 3. Importar a planilha pro Supabase de produção
-
-Continue rodando localmente, apontando o `.env` pro mesmo Supabase usado em produção:
-
-```bash
-npm run import
-```
-
-Funções serverless da Vercel **não** são apropriadas pra rodar import de planilha (são limitadas a poucos segundos), por isso fazemos isso da sua máquina mesmo. É só garantir que o `.env` aponte pra `SUPABASE_URL` certa.
-
----
-
-## Como funciona o login (resumo técnico)
-
-1. `POST /api/auth/login` recebe `{ username, password }` e compara com o `.env`.
-2. Se baterem, devolve um **JWT** assinado com `JWT_SECRET`, validade `JWT_EXPIRES_IN` (padrão `7d`).
-3. O frontend guarda esse token em `localStorage` (`organistas_token`).
+1. `POST /api/auth/login` recebe `{ username, password }` e compara com as variáveis do `.env`.
+2. Se baterem, devolve um **JWT** assinado com `JWT_SECRET`, validade `JWT_EXPIRES_IN`.
+3. O frontend guarda o token em `localStorage` (`organistas_token`).
 4. Em toda chamada à API, o cliente envia `Authorization: Bearer <token>`.
-5. O middleware `requireAuth` valida o token; se expirou, o frontend desloga
-   automaticamente e manda pra `/login`.
-6. Para rotas de escrita, o middleware `requireAdmin` exige `role === 'admin'`.
+5. O middleware `requireAuth` valida o token a cada requisição; se expirou, o frontend desloga automaticamente.
+6. Para rotas de escrita, o `requireAdmin` exige `role === 'admin'`.
 
 ---
 
-## Troubleshooting
+## 🗺️ Roadmap
 
-| Sintoma                                      | Causa provável / Solução                                                |
-| -------------------------------------------- | ----------------------------------------------------------------------- |
-| `Token inválido ou expirado`                 | Passou de 7 dias, ou `JWT_SECRET` foi trocado. Faça login de novo.      |
-| `Falha ao carregar` no frontend              | Backend não rodou — confira o terminal do `npm run dev`.                |
-| Importação falha com "permission denied"     | A chave usada no `.env` precisa ser a `service_role`, não a `anon`.     |
-| `404 /api/...` em produção                   | Confira se o `vercel.json` está na raiz e tem o rewrite `/api/:path*`.  |
-| Tabela "organistas" não existe               | Rode `supabase-schema.sql` no SQL Editor do Supabase.                   |
-| `npm run dev` reclama de variáveis faltando  | Crie `.env` a partir do `.env.example` e preencha tudo.                 |
+Ideias pra evoluir (contribuições bem-vindas!):
+
+- [ ] Cadastro de usuários direto pelo painel (em vez de fixos no `.env`).
+- [ ] Exportação da lista pra Excel a partir da interface.
+- [ ] Histórico/auditoria de edições.
+- [ ] Modo escuro.
+- [ ] Notificações por e-mail quando uma organista é cadastrada.
+- [ ] PWA (instalar no celular como app).
 
 ---
 
-🎵 Bom uso! ♪ ♫ ♬
+## 🤝 Contribuindo
+
+Pull requests são bem-vindos! Pra mudanças grandes, abra primeiro uma _issue_ pra discutirmos a ideia.
+
+```bash
+# fork → clone → branch nova
+git checkout -b feature/minha-ideia
+# faça suas alterações, commit, push
+git push origin feature/minha-ideia
+# abra um Pull Request no GitHub
+```
+
+---
+
+## 🐛 Troubleshooting
+
+| Sintoma | Causa provável / Solução |
+| --- | --- |
+| `Token inválido ou expirado` | Passou de 7 dias, ou `JWT_SECRET` foi trocado. Faça login novamente. |
+| `Falha ao carregar` no frontend | Backend não rodou — confira o terminal do `npm run dev`. |
+| Importação falha com `permission denied` | A chave usada precisa ser a `service_role`, não a `anon`. |
+| `404 /api/...` em produção | Confira se o `vercel.json` está na raiz e tem o rewrite `/api/:path*`. |
+| Tabela `organistas` não existe | Rode `supabase-schema.sql` no SQL Editor do Supabase. |
+| `npm run dev` reclama de variáveis faltando | Crie `.env` a partir do `.env.example` e preencha tudo. |
+
+---
+
+## 📄 Licença
+
+Distribuído sob a licença **MIT**. Veja [`LICENSE`](./LICENSE) para mais informações.
+
+> 💡 Se ainda não tiver o arquivo `LICENSE`, crie um na raiz com [este texto](https://opensource.org/license/mit) e substitua "[ano]" e "[nome]" pelos seus dados.
+
+---
+
+## 👤 Autor
+
+**Matheus Giussepe**
+
+- GitHub: [@SEU-USUARIO](https://github.com/SEU-USUARIO)
+- E-mail: mgiussepe26@gmail.com
+
+---
+
+<div align="center">
+
+🎵 _Feito com carinho para a Obra de Deus_ ♪ ♫ ♬
+
+⭐ **Se este projeto te ajudou, deixe uma estrela!**
+
+</div>
