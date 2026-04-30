@@ -46,12 +46,25 @@ export default function AdminList() {
 
   const filtered = useMemo(() => {
     const q = busca.trim().toLowerCase();
-    return items.filter((it) => {
+    const lista = items.filter((it) => {
       if (estadoFiltro && it.estado !== estadoFiltro) return false;
       if (!q) return true;
       const blob = [it.nome, it.cidade, it.local_culto, it.examinadora, it.encarregado, it.telefone]
         .filter(Boolean).join(' ').toLowerCase();
       return blob.includes(q);
+    });
+    // Reordena para que INTERNACIONAL apareça sempre por último,
+    // mantendo a ordem alfabética dentro de cada grupo (BR e internacional).
+    return [...lista].sort((a, b) => {
+      const aIntl = a.estado === 'INTERNACIONAL';
+      const bIntl = b.estado === 'INTERNACIONAL';
+      if (aIntl && !bIntl) return 1;
+      if (bIntl && !aIntl) return -1;
+      const porEstado = (a.estado || '').localeCompare(b.estado || '', 'pt-BR');
+      if (porEstado !== 0) return porEstado;
+      const porCidade = (a.cidade || '').localeCompare(b.cidade || '', 'pt-BR');
+      if (porCidade !== 0) return porCidade;
+      return (a.nome || '').localeCompare(b.nome || '', 'pt-BR');
     });
   }, [items, busca, estadoFiltro]);
 

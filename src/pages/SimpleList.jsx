@@ -35,7 +35,12 @@ export default function SimpleList() {
       if (!map.has(k)) map.set(k, []);
       map.get(k).push(it);
     }
-    return [...map.entries()].sort(([a], [b]) => a.localeCompare(b, 'pt-BR'));
+    return [...map.entries()].sort(([a], [b]) => {
+      // INTERNACIONAL sempre por último, depois dos estados BR.
+      if (a === 'INTERNACIONAL' && b !== 'INTERNACIONAL') return 1;
+      if (b === 'INTERNACIONAL' && a !== 'INTERNACIONAL') return -1;
+      return a.localeCompare(b, 'pt-BR');
+    });
   }, [items, busca]);
 
   return (
