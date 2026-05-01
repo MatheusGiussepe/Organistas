@@ -76,6 +76,7 @@ export default function SimpleList() {
                   <li key={it.id} className="card-simple">
                     <div className="card-title">{it.nome || '— Não tem organista —'}</div>
                     <div className="card-row"><b>Cidade:</b> {it.cidade || '—'}</div>
+                    <div className="card-row"><b>Instrumento:</b> {it.instrumento || '—'}</div>
                     <div className="card-row"><b>Local de culto:</b> {it.local_culto || '—'}</div>
                     <div className="card-row"><b>Instrumento:</b> {it.instrumento || '—'}</div>
                     <div className="card-row"><b>Examinadora:</b> {it.examinadora || '—'}</div>

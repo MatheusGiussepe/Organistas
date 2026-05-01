@@ -204,6 +204,7 @@ export default function AdminList() {
                 <th>Status</th>
                 <th>Estado</th>
                 <th>Cidade</th>
+                <th>Instrumento</th>
                 <th>Local de culto</th>
                 <th>Instrumento</th>
                 <th>Telefone</th>
@@ -220,6 +221,7 @@ export default function AdminList() {
                   <td>{it.status || '—'}</td>
                   <td>{it.estado || '—'}</td>
                   <td>{it.cidade || '—'}</td>
+                  <td>{it.instrumento || '—'}</td>
                   <td>{it.local_culto || '—'}</td>
                   <td>{it.instrumento || '—'}</td>
                   <td>{it.telefone || '—'}</td>
