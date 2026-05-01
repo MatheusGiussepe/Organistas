@@ -78,7 +78,6 @@ export default function SimpleList() {
                     <div className="card-row"><b>Cidade:</b> {it.cidade || '—'}</div>
                     <div className="card-row"><b>Instrumento:</b> {it.instrumento || '—'}</div>
                     <div className="card-row"><b>Local de culto:</b> {it.local_culto || '—'}</div>
-                    <div className="card-row"><b>Instrumento:</b> {it.instrumento || '—'}</div>
                     <div className="card-row"><b>Examinadora:</b> {it.examinadora || '—'}</div>
                     <div className="card-row"><b>Encarregado:</b> {it.encarregado || '—'}</div>
                     <div className="card-row"><b>Status:</b> {it.status || '—'}</div>
